@@ -145,7 +145,13 @@ To manually build and push images:
 
 ## Deployment
 
-See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions, including:
+### Quick Start (Dockge)
+
+**Just need to paste a compose file?** See [DOCKGE-QUICK-START.md](DOCKGE-QUICK-START.md) for copy-paste ready instructions.
+
+### Detailed Guide
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for comprehensive deployment instructions, including:
 - Deploying with Dockge
 - Setting up GitHub Container Registry authentication
 - Production server configuration

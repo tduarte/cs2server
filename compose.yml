@@ -1,0 +1,86 @@
+services:
+  cs2-server:
+    image: joedwards32/cs2
+    container_name: cs2-dedicated
+    environment:
+      # Server configuration
+      - SRCDS_TOKEN=FBF07AECE338CBA2E08FF0063F55F934 # Game Server Token from https://steamcommunity.com/dev/managegameservers
+      - DEBUG=0 # (0 - off, 1 - steamcmd, 2 - cs2, 3 - all)
+      - STEAMAPPVALIDATE=0 # (0 - no validation, 1 - enable validation)
+      - CS2_SERVERNAME=CS2Cache # (Set the visible name for your private server.)
+      - CS2_CHEATS=0 # (0 - disable cheats, 1 - enable cheats)
+      - CS2_LAN=0
+      - CS2_PORT=27015 # (CS2 server listen port tcp_udp)
+      - CS2_SERVER_HIBERNATE=0 # (Put server in a low CPU state when there are no players. 0 - hibernation disabled, 1 - hibernation enabled)
+      - CS2_RCONPW=oscria # (RCON password)
+      - CS2_PW=fallen # (Optional, CS2 server password)
+      - CS2_MAXPLAYERS=10 # (Max players)
+      - CS2_ADDITIONAL_ARGS=+exec competitive_workshop # (Optional additional arguments to pass into cs2 - using workshop competitive config)
+      - CS2_CFG_URL= # HTTP/HTTPS URL to fetch a Tar Gzip bundle, Tar or Zip archive of configuration files/mods (fill in when you have the URL)
+      # Game modes
+      - CS2_GAMEALIAS=competitive # (Game type, e.g. casual, competitive, deathmatch. See https://developer.valvesoftware.com/wiki/Counter-Strike_2/Dedicated_Servers)
+      - CS2_MAPGROUP=mg_active # (Map pool. Ignored if Workshop maps are defined.)
+      # CS2_STARTMAP=de_inferno # (Start map. Ignored if Workshop maps are defined - commented out since workshop map is used)
+      # Workshop Maps
+      - CS2_HOST_WORKSHOP_COLLECTION # The workshop collection to use
+      - CS2_HOST_WORKSHOP_MAP=3437809122 # The workshop map to use. If collection is also defined, this is the starting map.
+    volumes:
+      - cs2:/home/steam/cs2-dedicated/ # Persistent data volume mount point inside container
+    ports:
+      - 27015:27015/tcp # TCP
+      - 27015:27015/udp # UDP
+      - 27020:27020/udp # UDP
+    stdin_open: true # Add local console for docker attach, docker attach --sig-proxy=false cs2-dedicated
+    tty: true # Add local console for docker attach, docker attach --sig-proxy=false cs2-dedicated
+    healthcheck:
+      # Wait for CS2 server to be ready - the start_period gives it time to download
+      # After start_period, check if port is open (basic check)
+      # Backend retry logic will handle actual RCON authentication
+      test: ["CMD-SHELL", "timeout 2 bash -c '</dev/tcp/127.0.0.1/27015' 2>/dev/null && exit 0 || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 600s # Give CS2 server 10 minutes to download and start (first time can take a while)
+    networks:
+      - cs2-network
+
+  # Web UI Backend
+  web-ui-backend:
+    build:
+      context: ./web-ui/backend
+      dockerfile: Dockerfile
+    container_name: cs2-web-ui-backend
+    environment:
+      - RCON_HOST=cs2-server
+      - RCON_PORT=27015
+      - RCON_PASSWORD=oscria
+      - PORT=3001
+    ports:
+      - 3001:3001
+    depends_on:
+      cs2-server:
+        condition: service_healthy
+    networks:
+      - cs2-network
+    restart: unless-stopped
+
+  # Web UI Frontend
+  web-ui-frontend:
+    build:
+      context: ./web-ui/frontend
+      dockerfile: Dockerfile
+    container_name: cs2-web-ui-frontend
+    ports:
+      - 3000:80
+    depends_on:
+      - web-ui-backend
+    networks:
+      - cs2-network
+    restart: unless-stopped
+
+volumes:
+  cs2: null
+
+networks:
+  cs2-network:
+    driver: bridge

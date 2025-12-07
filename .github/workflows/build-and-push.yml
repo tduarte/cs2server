@@ -24,16 +24,6 @@ jobs:
       contents: read
       packages: write
 
-    strategy:
-      matrix:
-        service:
-          - name: web-ui-backend
-            context: ./web-ui/backend
-            dockerfile: Dockerfile
-          - name: web-ui-frontend
-            context: ./web-ui/frontend
-            dockerfile: Dockerfile
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -52,7 +42,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.IMAGE_PREFIX }}-${{ matrix.service.name }}
+          images: ${{ env.IMAGE_PREFIX }}-web-ui
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -64,8 +54,8 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ${{ matrix.service.context }}
-          file: ${{ matrix.service.context }}/${{ matrix.service.dockerfile }}
+          context: ./web-ui
+          file: ./web-ui/Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

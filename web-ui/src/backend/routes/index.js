@@ -1,5 +1,5 @@
 import express from 'express';
-import RconClient from '../rcon.js';
+import RconClient from '../../shared/rcon.js';
 
 const router = express.Router();
 

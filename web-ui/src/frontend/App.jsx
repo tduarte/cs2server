@@ -6,9 +6,8 @@ import PlayerManagement from './components/PlayerManagement'
 import MapSelector from './components/MapSelector'
 import './App.css'
 
-// Use relative URL in production (nginx proxies /api to backend)
-// Use environment variable for development
-const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:3001')
+// Use relative URL - backend serves frontend and handles /api routes
+const API_URL = import.meta.env.VITE_API_URL || ''
 
 function App() {
   const [serverStatus, setServerStatus] = useState(null)

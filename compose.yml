@@ -45,36 +45,22 @@ services:
     networks:
       - cs2-network
 
-  # Web UI Backend
-  web-ui-backend:
+  # Web UI (Frontend + Backend)
+  web-ui:
     build:
-      context: ./web-ui/backend
+      context: ./web-ui
       dockerfile: Dockerfile
-    container_name: cs2-web-ui-backend
+    container_name: cs2-web-ui
     environment:
       - RCON_HOST=${RCON_HOST:-cs2-server}
       - RCON_PORT=${RCON_PORT:-27015}
       - RCON_PASSWORD=${CS2_RCONPW} # Uses same password as CS2 server
-      - PORT=3001
+      - PORT=3000
     ports:
-      - 3001:3001
+      - 3000:3000
     depends_on:
       cs2-server:
         condition: service_healthy
-    networks:
-      - cs2-network
-    restart: unless-stopped
-
-  # Web UI Frontend
-  web-ui-frontend:
-    build:
-      context: ./web-ui/frontend
-      dockerfile: Dockerfile
-    container_name: cs2-web-ui-frontend
-    ports:
-      - 3000:80
-    depends_on:
-      - web-ui-backend
     networks:
       - cs2-network
     restart: unless-stopped

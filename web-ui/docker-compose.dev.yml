@@ -1,7 +1,7 @@
 services:
   backend:
     build:
-      context: ./backend
+      context: .
       dockerfile: Dockerfile.dev
     container_name: cs2-web-ui-backend-dev
     environment:
@@ -14,8 +14,11 @@ services:
     ports:
       - 3001:3001
     volumes:
-      - ./backend/src:/app/src
-      - ./backend/package.json:/app/package.json
+      - ./src/backend:/app/src/backend
+      - ./src/shared:/app/src/shared
+      - ./package.json:/app/package.json
+    working_dir: /app
+    command: npm run dev:backend
     restart: unless-stopped
     networks:
       - cs2-dev-network
@@ -24,7 +27,7 @@ services:
 
   frontend:
     build:
-      context: ./frontend
+      context: .
       dockerfile: Dockerfile.dev
     container_name: cs2-web-ui-frontend-dev
     environment:
@@ -33,12 +36,14 @@ services:
     ports:
       - 3000:5173
     volumes:
-      - ./frontend/src:/app/src
-      - ./frontend/package.json:/app/package.json
-      - ./frontend/vite.config.js:/app/vite.config.js
-      - ./frontend/tailwind.config.js:/app/tailwind.config.js
-      - ./frontend/postcss.config.js:/app/postcss.config.js
-      - ./frontend/index.html:/app/index.html
+      - ./src/frontend:/app/src/frontend
+      - ./index.html:/app/index.html
+      - ./vite.config.js:/app/vite.config.js
+      - ./tailwind.config.js:/app/tailwind.config.js
+      - ./postcss.config.js:/app/postcss.config.js
+      - ./package.json:/app/package.json
+    working_dir: /app
+    command: npm run dev:frontend
     depends_on:
       - backend
     restart: unless-stopped

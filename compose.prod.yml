@@ -47,9 +47,7 @@ services:
 
   # Web UI Backend
   web-ui-backend:
-    build:
-      context: ./web-ui/backend
-      dockerfile: Dockerfile
+    image: ghcr.io/tduarte/cs2server-web-ui-backend:latest
     container_name: cs2-web-ui-backend
     environment:
       - RCON_HOST=${RCON_HOST:-cs2-server}
@@ -67,9 +65,7 @@ services:
 
   # Web UI Frontend
   web-ui-frontend:
-    build:
-      context: ./web-ui/frontend
-      dockerfile: Dockerfile
+    image: ghcr.io/tduarte/cs2server-web-ui-frontend:latest
     container_name: cs2-web-ui-frontend
     ports:
       - 3000:80
@@ -85,3 +81,4 @@ volumes:
 networks:
   cs2-network:
     driver: bridge
+

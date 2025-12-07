@@ -54,6 +54,7 @@ services:
     environment:
       - RCON_HOST=${RCON_HOST:-cs2-server}
       - RCON_PORT=${RCON_PORT:-27015}
+      - CS2_PORT=${CS2_PORT:-27015} # CS2 server port for connection info
       - RCON_PASSWORD=${CS2_RCONPW} # Uses same password as CS2 server
       - PORT=3000
     ports:

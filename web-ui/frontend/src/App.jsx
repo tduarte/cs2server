@@ -24,7 +24,10 @@ function App() {
   const fetchStatus = async () => {
     try {
       const response = await fetch(`${API_URL}/api/status`)
-      if (!response.ok) throw new Error('Failed to fetch status')
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
+        throw new Error(errorData.error || errorData.details || `Server returned ${response.status}`)
+      }
       const data = await response.json()
       setServerStatus(data)
       setError(null)
@@ -53,7 +56,20 @@ function App() {
 
         {error && (
           <div className="bg-red-900/50 border border-red-500 text-red-100 px-4 py-3 rounded mb-6">
-            Error: {error}
+            <div className="font-semibold mb-2">⚠️ Connection Error</div>
+            <div className="text-sm">{error}</div>
+            {error.includes('Failed to connect to CS2 server') && (
+              <div className="mt-3 text-xs text-red-200">
+                <p className="mb-1">Possible causes:</p>
+                <ul className="list-disc list-inside space-y-1">
+                  <li>CS2 server is still starting up (first startup takes 10+ minutes)</li>
+                  <li>RCON password mismatch - check CS2_RCONPW environment variable</li>
+                  <li>CS2 server container is not running</li>
+                  <li>Network connectivity issue between containers</li>
+                </ul>
+                <p className="mt-2">Check the CS2 server logs in Dockge to see what's happening.</p>
+              </div>
+            )}
           </div>
         )}
 

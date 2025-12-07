@@ -44,7 +44,7 @@ services:
   cs2-server:
     image: joedwards32/cs2
     platform: linux/amd64
-    container_name: cs2-dedicated
+    container_name: cs2-server
     environment:
       # Server configuration - REQUIRED: Set these in .env file
       - SRCDS_TOKEN=${SRCDS_TOKEN} # REQUIRED: Game Server Token from https://steamcommunity.com/dev/managegameservers
@@ -73,8 +73,8 @@ services:
       - 27015:27015/tcp # TCP
       - 27015:27015/udp # UDP
       - 27020:27020/udp # UDP
-    stdin_open: true # Add local console for docker attach, docker attach --sig-proxy=false cs2-dedicated
-    tty: true # Add local console for docker attach, docker attach --sig-proxy=false cs2-dedicated
+    stdin_open: true # Add local console for docker attach, docker attach --sig-proxy=false cs2-server
+    tty: true # Add local console for docker attach, docker attach --sig-proxy=false cs2-server
     healthcheck:
       # Wait for CS2 server to be ready - the start_period gives it time to download
       # After start_period, check if port is open (basic check)
@@ -159,7 +159,7 @@ Set these in Dockge's environment variables section:
 
 **CS2 server won't start?**
 - Check `SRCDS_TOKEN` is correct
-- View logs: Click on `cs2-dedicated` container in Dockge
+- View logs: Click on `cs2-server` container in Dockge
 
 **Web UI can't connect?**
 - Verify `CS2_RCONPW` matches in both CS2 server and backend env vars

@@ -88,7 +88,7 @@ Or use this direct link to copy the raw content.
 ## Step 4: Verify Deployment
 
 1. **Check container status** in Dockge - all containers should be running:
-   - `cs2-dedicated` (CS2 server)
+   - `cs2-server` (CS2 server)
    - `cs2-web-ui-backend` (Backend API)
    - `cs2-web-ui-frontend` (Web UI)
 
@@ -97,7 +97,7 @@ Or use this direct link to copy the raw content.
    - You should see the CS2 server management interface
 
 3. **Check CS2 server logs**:
-   - In Dockge, click on the `cs2-dedicated` container
+   - In Dockge, click on the `cs2-server` container
    - View logs to see server startup progress
    - First startup may take 10+ minutes while downloading game files
 
@@ -126,7 +126,7 @@ sudo ufw allow 3000/tcp  # Only if you want external web UI access
 - Check that the images exist: https://github.com/tduarte/cs2server/pkgs/container/cs2server-web-ui-backend
 
 ### CS2 server won't start
-- Check logs: `docker logs cs2-dedicated`
+- Check logs: `docker logs cs2-server`
 - Verify `SRCDS_TOKEN` is set correctly in `.env`
 - Ensure the server has enough resources (CS2 server needs ~2GB RAM minimum)
 

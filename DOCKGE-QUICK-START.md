@@ -2,14 +2,22 @@
 
 ## Copy-Paste Ready Instructions
 
-### 1. Login to GitHub Container Registry
+### 1. GitHub Container Registry Setup
 
-**On your server, run:**
-```bash
-echo YOUR_GITHUB_TOKEN | docker login ghcr.io -u YOUR_GITHUB_USERNAME --password-stdin
-```
+**Option A: If packages are PUBLIC** (no login needed)
+- Skip this step! Images can be pulled without authentication.
 
-Get a token from: https://github.com/settings/tokens (needs `read:packages` permission)
+**Option B: If packages are PRIVATE** (default - login required)
+- On your server, run:
+  ```bash
+  echo YOUR_GITHUB_TOKEN | docker login ghcr.io -u YOUR_GITHUB_USERNAME --password-stdin
+  ```
+- Get a token from: https://github.com/settings/tokens (needs `read:packages` permission)
+- OR add registry in Dockge Settings → Docker Registry
+
+**To make packages public** (after pushing):
+1. Go to your repo → Packages
+2. Click each package → Package settings → Change visibility → Public
 
 ### 2. In Dockge UI
 
@@ -145,8 +153,9 @@ Set these in Dockge's environment variables section:
 ## Troubleshooting
 
 **Images won't pull?**
-- Make sure you're logged into `ghcr.io` (see step 1)
-- Verify images exist: https://github.com/tduarte/cs2server/pkgs
+- If packages are private: Make sure you're logged into `ghcr.io` (see step 1)
+- If packages are public: No login needed, but verify images exist: https://github.com/tduarte/cs2server/pkgs
+- Check that GitHub Actions workflow completed successfully (images must be built first)
 
 **CS2 server won't start?**
 - Check `SRCDS_TOKEN` is correct

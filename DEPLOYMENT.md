@@ -19,27 +19,38 @@ https://github.com/tduarte/cs2server/blob/main/compose.prod.yml
 
 Or use this direct link to copy the raw content.
 
-### Step 2: Login to GitHub Container Registry
+### Step 2: GitHub Container Registry Setup
 
-You need to authenticate with GitHub Container Registry to pull the images.
+**Important:** GitHub Container Registry packages are **private by default**, even if your repository is public.
 
-**Create a GitHub Personal Access Token:**
-1. Go to https://github.com/settings/tokens
-2. Click "Generate new token (classic)"
-3. Select `read:packages` permission
-4. Generate and copy the token
+**Option A: Make packages public** (Recommended for open-source - no login needed)
+1. After pushing to GitHub, go to your repository
+2. Click "Packages" in the right sidebar
+3. For each package (`cs2server-web-ui-backend` and `cs2server-web-ui-frontend`):
+   - Click the package name
+   - Go to "Package settings"
+   - Scroll to "Danger Zone"
+   - Click "Change visibility" → "Change to public"
+4. **No authentication needed** - anyone can pull the images
 
-**Login via Docker (on your server):**
-```bash
-echo YOUR_GITHUB_TOKEN | docker login ghcr.io -u YOUR_GITHUB_USERNAME --password-stdin
-```
+**Option B: Keep packages private** (Requires authentication)
+- Create a GitHub Personal Access Token:
+  1. Go to https://github.com/settings/tokens
+  2. Click "Generate new token (classic)"
+  3. Select `read:packages` permission
+  4. Generate and copy the token
 
-**OR add registry in Dockge:**
-- Go to Dockge Settings → Docker Registry
-- Add registry:
-  - Registry URL: `ghcr.io`
-  - Username: Your GitHub username
-  - Password: Your GitHub Personal Access Token
+- Login via Docker (on your server):
+  ```bash
+  echo YOUR_GITHUB_TOKEN | docker login ghcr.io -u YOUR_GITHUB_USERNAME --password-stdin
+  ```
+
+- OR add registry in Dockge:
+  - Go to Dockge Settings → Docker Registry
+  - Add registry:
+    - Registry URL: `ghcr.io`
+    - Username: Your GitHub username
+    - Password: Your GitHub Personal Access Token
 
 ### Step 3: Deploy in Dockge
 
